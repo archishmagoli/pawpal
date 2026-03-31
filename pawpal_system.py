@@ -11,6 +11,10 @@ class Task:
     start_time: str | None = None
     completed: bool = False
 
+    def mark_complete(self) -> None:
+        """Mark this task as completed."""
+        self.completed = True
+
 
 @dataclass
 class Pet:
@@ -20,12 +24,15 @@ class Pet:
     tasks: list[Task] = field(default_factory=list)
 
     def add_task(self, task: Task) -> None:
+        """Append a task to this pet's task list."""
         self.tasks.append(task)
 
     def remove_task(self, name: str) -> None:
+        """Remove a task by name from this pet's task list."""
         self.tasks = [t for t in self.tasks if t.name != name]
 
     def get_tasks(self) -> list[Task]:
+        """Return a copy of this pet's task list."""
         return list(self.tasks)
 
 
@@ -36,12 +43,15 @@ class Owner:
     pets: list[Pet] = field(default_factory=list)
 
     def add_pet(self, pet: Pet) -> None:
+        """Add a pet to this owner's pet list."""
         self.pets.append(pet)
 
     def remove_pet(self, name: str) -> None:
+        """Remove a pet by name from this owner's pet list."""
         self.pets = [p for p in self.pets if p.name != name]
 
     def get_pet(self, name: str) -> Pet | None:
+        """Return the first pet matching the given name, or None."""
         return next((p for p in self.pets if p.name == name), None)
 
 
@@ -69,6 +79,7 @@ class Schedule:
                 time_remaining -= task.duration
 
     def display_plan(self) -> None:
+        """Print the scheduled tasks for this pet to stdout."""
         print(f"Schedule for {self.pet.name} on {self.date}")
         print(f"Available time: {self.available_time} min")
         print("-" * 32)
