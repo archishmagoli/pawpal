@@ -5,12 +5,36 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+I centered my design around the core user actions necessary for the application. In this case, a user should be able to perform the following actions:
+- Add pet information
+- Schedule tasks (e.g. walk the pet, bath time, etc.)
+- View the daily schedule of tasks
+
 - What classes did you include, and what responsibilities did you assign to each?
+
+I believe the application should have the following classes and associated attributes/methods. In general, the `Task` class holds the associated methods for creating a task, and each `Pet` will have a list of tasks it needs to get done on its behalf:
+### `Owner`
+- **Attributes:** `name`, `pets: list[Pet]`, `available_time: int` (minutes/day)
+- **Methods:** `add_pet(pet)`, `remove_pet(name)`, `get_pet(name)`
+
+### `Pet`
+- **Attributes:** `name`, `age`, `species`, `tasks: list[Task]`
+- **Methods:** `add_task(task)`, `remove_task(name)`, `get_tasks()`
+
+### `Task`
+- **Attributes:** `name`, `duration: int` (minutes), `priority: str`, `category: str`, `start_time: str | None`
+- **Methods:** none — plain data object
+
+### `Schedule`
+- **Attributes:** `date`, `pet: Pet`, `available_time: int`, `tasks: list[Task]`
+- **Methods:** `generate_plan()`, `display_plan()`
 
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
+
+Yes, my design **did change** during implementation. When I let Claude (via Copilot) take the reins in class design once I had given it a rough idea of what classes, methods, and attributes I was looking for, Claude suggested having **five** classes, with the additional fifth class being for `ScheduledTask`s. I felt this was somewhat redundant, since we already had a `Task` class we could just expand during scheduling, so I suggested we remove that class and stick with the four we have above. Additionally, I initially had each `Owner` own the list of tasks generated, but then that would be difficult to categorize per animal, so I asked Claude to move that ownership to each `Per` instead. This allows for categorization while still allowing us to group by `Owner` via the `Owner has multiple Pets` relationship.
 
 ---
 
