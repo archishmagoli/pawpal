@@ -83,11 +83,20 @@ Early in the project, Claude suggested adding a separate `ScheduledTask` class t
 - What behaviors did you test?
 - Why were these tests important?
 
+The test suite covers five behaviors: chronological sorting, unscheduled task
+ordering, daily recurrence via `Task.mark_complete()` directly, daily recurrence
+via `Pet.complete_task()` (the higher-level path), conflict detection on
+overlapping tasks, and a no-false-positives check for back-to-back tasks.
+
+These tests were important because they target the three places the system can silently produce wrong output — a schedule that's out of order, a recurring task that doesn't regenerate, or a conflict that goes undetected. Unlike a crash or exception, those failures would just show the user incorrect data with no error message. If the user is expecting to see ordered output from the application, for example, this incorrect output would be very obvious to the user, as well.
+
 **b. Confidence**
 
 - How confident are you that your scheduler works correctly?
 - What edge cases would you test next if you had more time?
 
+As I mentioned in the README, I would give a 4 out of 5 confidence rating for the scheduler. The core logic is well-covered with tests: every major function has at least one positive case and one edge case. We also added multiple tests for the sorting and filtering algorithms we implemented. If I had more time, I would probably test the `build_owner_schedules` integration path (owner → pets → schedules in one call),
+weekly recurrence (only daily is tested), and `generate_plan`'s time-budget enforcement — verifying that a task which doesn't fit is actually dropped. Those aren't risky omissions for this scale of project, but they're the natural next tests to write.
 ---
 
 ## 5. Reflection
@@ -95,11 +104,14 @@ Early in the project, Claude suggested adding a separate `ScheduledTask` class t
 **a. What went well**
 
 - What part of this project are you most satisfied with?
+I'm really satisfied with the AI interactions I had in this project. I felt almost totally in sync with Claude, and I liked how the final product turned out, especially compared to the first `Show` project we had to complete.
 
 **b. What you would improve**
 
 - If you had another iteration, what would you improve or redesign?
+As mentioned in the README, I would probably add integration-level testing of the full `build_owner_schedules` flow and the Streamlit UI layer. A lot of the testing I currently have is pretty surface-level/adherent to the exact instructions in the project description. I would also to try to simplify the demo layout; I think it is readable so far but having more of a structure to things would make it even clearer. Lastly, I would update the application's design such that it outputs the scheduling conflcit warning during task creation instead of running it separately.
 
 **c. Key takeaway**
 
 - What is one important thing you learned about designing systems or working with AI on this project?
+I keep learning this, but honestly AI's main capability and intelligence comes from the thoroughness and correctness of the prompts you use. I've realized time and time again that vague prompts with bland instructions don't help any AI agent come up with a beautiful finished product, and you must be intelligent enough to navigate the requirements in order to build something meaningful.

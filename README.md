@@ -22,6 +22,15 @@ Your final app should:
 - Display the plan clearly (and ideally explain the reasoning)
 - Include tests for the most important scheduling behaviors
 
+## Features
+
+- **Priority-based scheduling** — Tasks are sorted high → medium → low and packed into the owner's daily time budget; any task that doesn't fit is dropped rather than truncated.
+- **Chronological sorting** — `sort_tasks_by_time` orders any flat list of tasks by their assigned start time using lexicographic comparison on zero-padded `"HH:MM"` strings. Tasks with no start time are pushed to the end.
+- **Conflict detection** — `detect_conflicts` checks every pair of scheduled tasks for overlapping time windows using integer-minute arithmetic. Flags both same-pet and cross-pet collisions and returns plain-English warning strings.
+- **Daily and weekly recurrence** — Completing a recurring task automatically creates the next occurrence with the due date advanced by one day or one week, keeping the original task's name, duration, priority, and category.
+- **Flexible filtering** — `filter_tasks` lets you query tasks across all schedules by pet name, completion status, or both combined.
+- **Multi-pet scheduling** — `build_owner_schedules` traverses the full owner → pets hierarchy and produces one `Schedule` per pet, splitting the owner's available time evenly across pets.
+
 ## Smarter Scheduling
 
 Beyond the basic priority-sort planner, the scheduler includes four algorithmic features:
@@ -62,7 +71,8 @@ python -m pytest
 
 Core scheduling behaviors — time conflicts, filtering, recurring tasks, and sorting — are all covered with both positive cases and edge cases (e.g. back-to-back tasks, unscheduled tasks). The main gap is integration-level testing of the full `build_owner_schedules` flow and the Streamlit UI layer.
 
----
+## Demo
+<a href="/course_images/ai110/your_screenshot_name.png" target="_blank"><img src='demo.png' title='PawPal App' width='' alt='PawPal App' class='center-block' /></a>
 
 ## Getting started
 

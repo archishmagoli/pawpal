@@ -16,6 +16,7 @@ classDiagram
         +add_task(task)
         +remove_task(name)
         +get_tasks()
+        +complete_task(name, on_date)
     }
 
     class Task {
@@ -24,6 +25,10 @@ classDiagram
         +str priority
         +str category
         +str|None start_time
+        +bool completed
+        +str|None recurrence
+        +date|None due_date
+        +mark_complete() Task|None
     }
 
     class Schedule {
@@ -35,7 +40,18 @@ classDiagram
         +display_plan()
     }
 
+    class Helpers {
+        <<module>>
+        sort_tasks_by_time(tasks) list~Task~
+        filter_tasks(schedules, completed, pet_name) list~Task~
+        detect_conflicts(schedules) list~str~
+        build_owner_schedules(owner, date) list~Schedule~
+    }
+
     Owner "1" --> "many" Pet : owns
     Pet "1" --> "many" Task : has
     Schedule "1" --> "1" Pet : plans for
     Schedule "1" --> "many" Task : contains
+    Task --> Task : mark_complete() creates
+    Helpers ..> Schedule : uses
+    Helpers ..> Task : uses

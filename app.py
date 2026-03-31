@@ -1,6 +1,6 @@
 import streamlit as st
 from datetime import date
-from pawpal_system import Owner, Pet, Task, Schedule
+from pawpal_system import Owner, Pet, Task, Schedule, sort_tasks_by_time, detect_conflicts
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
 st.title("🐾 PawPal+")
@@ -85,8 +85,7 @@ if pet_tasks:
                 "Task": t.name,
                 "Duration (min)": t.duration,
                 "Priority": t.priority,
-                "Category": t.category,
-                "Done": "Yes" if t.completed else "No",
+                "Done": "✓" if t.completed else "",
             }
             for t in pet_tasks
         ]
@@ -123,15 +122,16 @@ if st.session_state.schedule:
     st.success(f"Schedule for **{schedule.pet.name}** on {schedule.date}")
 
     if schedule.tasks:
+        sorted_tasks = sort_tasks_by_time(schedule.tasks)
         st.table(
             [
                 {
+                    "Start": t.start_time or "—",
                     "Task": t.name,
                     "Duration (min)": t.duration,
                     "Priority": t.priority,
-                    "Category": t.category,
                 }
-                for t in schedule.tasks
+                for t in sorted_tasks
             ]
         )
         total = sum(t.duration for t in schedule.tasks)
@@ -139,6 +139,14 @@ if st.session_state.schedule:
         col_a, col_b = st.columns(2)
         col_a.metric("Time scheduled", f"{total} min")
         col_b.metric("Time remaining", f"{remaining} min")
+
+        conflicts = detect_conflicts([schedule])
+        if conflicts:
+            st.markdown("**Schedule conflicts detected:**")
+            for warning in conflicts:
+                st.warning(warning)
+        else:
+            st.success("No conflicts — schedule looks good!")
     else:
         st.warning(
             "No tasks fit within the available time, or all tasks are already completed."
