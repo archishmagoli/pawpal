@@ -38,6 +38,32 @@ Beyond the basic priority-sort planner, the scheduler includes four algorithmic 
 ### Conflict detection
 `detect_conflicts(schedules)` checks every pair of scheduled tasks for overlapping time windows using integer-minute arithmetic (`a_start < b_end and b_start < a_end`). It covers both same-pet and cross-pet collisions and returns a list of human-readable warning strings — it never raises an exception. An empty list means no conflicts were found.
 
+## Testing PawPal+
+
+### Run the tests
+
+```bash
+python -m pytest
+```
+
+### What the tests cover
+
+| Area | What is verified |
+|---|---|
+| **Sorting** | `sort_tasks_by_time` returns tasks in chronological order; unscheduled tasks (no `start_time`) are pushed to the end |
+| **Filtering** | Tasks can be filtered across schedules by pet name and/or completion status |
+| **Scheduling** | `Schedule.generate_plan` fits tasks within available time and assigns sequential start times |
+| **Recurring tasks** | Completing a daily task produces a new task with `due_date + 1 day` and `completed=False`; `Pet.complete_task` appends it automatically |
+| **Conflict detection** | Overlapping time windows are flagged; back-to-back tasks (no overlap) produce no warnings |
+
+### Confidence level
+
+**4 / 5 stars**
+
+Core scheduling behaviors — time conflicts, filtering, recurring tasks, and sorting — are all covered with both positive cases and edge cases (e.g. back-to-back tasks, unscheduled tasks). The main gap is integration-level testing of the full `build_owner_schedules` flow and the Streamlit UI layer.
+
+---
+
 ## Getting started
 
 ### Setup

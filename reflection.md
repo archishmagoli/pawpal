@@ -67,11 +67,13 @@ Claude suggested that a production scheduler with hundreds of tasks per day woul
 - How did you use AI tools during this project (for example: design brainstorming, debugging, refactoring)?
 - What kinds of prompts or questions were most helpful?
 
+AI was used throughout the entire project lifecycle - design brainstorming, code implementation, refactoring, debugging, and even testing. I found specific and measurable prompts to be the most helpful - the more direct and detailed I was with Claude, the better it performed. For example, "Fix all bugs in this file" was not as helpful as "Fix the `detect_conflicts()` function to ensure a warning is outputted when overlapping tasks are detected."
+
 **b. Judgment and verification**
 
 - Describe one moment where you did not accept an AI suggestion as-is.
 - How did you evaluate or verify what the AI suggested?
-
+Early in the project, Claude suggested adding a separate `ScheduledTask` class to represent a task that had been assigned a time slot. I pushed back and we talked through whether that was actually necessary. I considered what a `ScheduledTask` would add, which is essentially just a `start_time` field. I realized that `Task` already handled everything needed. Adding a whole new class just to hold one extra field would create redundancy: two classes representing the same concept, with logic split between them for no real benefit. I decided to keep `start_time` as an optional field directly on `Task`, which kept the design simpler and the codebase easier to follow. Claude updated the design to match that decision rather than the other way around.
 ---
 
 ## 4. Testing and Verification
