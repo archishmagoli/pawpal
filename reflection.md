@@ -45,11 +45,19 @@ Yes, my design **did change** during implementation. When I let Claude (via Copi
 - What constraints does your scheduler consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
+My scheduler considered two constraints: 
+- available time (the owner's daily minute budget, split evenly across pets)
+- task priority (high / medium / low)
+
+Obviously, **available time** had to be considered because if the owner can't perform all the tasks on the schedule in a given day, then we didn't do our job properly -- time is the strict cutoff. **Priority** also had to be considered because there may be days the owner's availability doesn't cover the task durations. Tasks are sorted by priority before being packed into the schedule, and any task that doesn't fit in the remaining time is dropped entirely.
+
 **b. Tradeoffs**
 
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+My scheduler uses an `O(n²)` algorithm for `detect_conflicts()` - meaning that it compares every pair of tasks to ensure the timing doesn't overlap. That tradeoff is reasonable for this scenario because we have a relatively small number of pets and tasks, per our demo in `main.py`. 
+Claude suggested that a production scheduler with hundreds of tasks per day would use a sweep-line algorithm (sort by start time, check only adjacent intervals) to bring this down to `O(n log n)`. The simpler `O(n²)` version was kept because the readability gain outweighs any performance need at this scale.
 ---
 
 ## 3. AI Collaboration
